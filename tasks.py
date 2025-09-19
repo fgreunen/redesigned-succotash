@@ -2,20 +2,23 @@ import csv
 import math
 from invoke import task
 from config import PATH_DATA
-from datagen import get_many
-from time import time
 import psutil
+from utilities import get_many, timing
 
-from db import get_average, get_average_bare, init
-from utilities import timing
-
+from db import (
+    get_average_duckdb,
+    get_average_bare,
+    get_average_pandas,
+    get_average_polars,
+    init,
+)
 
 process = psutil.Process()
 
 
 @task
 def generate(_):
-    N = 5000  # TODO: Make this 5m, and interpret.
+    N = 5000  # TODO: Make this 5m, and assess the change(-s).
 
     @timing
     def persist():
@@ -46,6 +49,8 @@ def generate(_):
 @task
 def analyse(_):
     init()
-    print(f"Current average (DuckDB) is: {get_average()}.")
+    print(f"Current average (DuckDB) is: {get_average_duckdb()}.")
     print(f"Current average (bare) is: {get_average_bare()}.")
+    print(f"Current average (Pandas) is: {get_average_pandas()}.")
+    print(f"Current average (Polars) is: {get_average_polars()}.")
     # TODO: Calculate and print the percentage of records that have k2 >= 500.
