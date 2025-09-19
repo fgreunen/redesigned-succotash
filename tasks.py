@@ -6,11 +6,12 @@ import psutil
 from utilities import get_many, timing
 
 from db import (
+    copy_to_parquet,
     get_average_duckdb,
     get_average_bare,
     get_average_pandas,
     get_average_polars,
-    init,
+    init as db_init,
 )
 
 process = psutil.Process()
@@ -18,7 +19,8 @@ process = psutil.Process()
 
 @task
 def generate(_):
-    N = 5000  # TODO: Make this 5m, and assess the change(-s).
+    db_init()
+    N = 500000  # TODO: Make this 5m, and assess the change(-s).
 
     @timing
     def persist():
@@ -43,12 +45,12 @@ def generate(_):
                     print(f"Progress - {progress}% ({current_mem_usage_mb}MB used).")
 
     persist()
+    copy_to_parquet()  # TODO: Interpret the size difference.
     # TODO: How to calculate and print the rate per second?
 
 
 @task
 def analyse(_):
-    init()
     print(f"Current average (DuckDB) is: {get_average_duckdb()}.")
     print(f"Current average (bare) is: {get_average_bare()}.")
     print(f"Current average (Pandas) is: {get_average_pandas()}.")

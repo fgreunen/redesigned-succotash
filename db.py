@@ -4,7 +4,7 @@ from config import PATH_DATA, PATH_DB
 from utilities import timing
 import polars as pl
 
-VIEW = f"""
+VIEW_DEFINITION = f"""
     CREATE OR REPLACE VIEW vw_data AS
     SELECT *
     FROM read_csv_auto('{PATH_DATA}');
@@ -17,7 +17,13 @@ def get_con():
 
 @timing
 def init():
-    get_con().execute(VIEW)
+    con = get_con()
+    con.execute(VIEW_DEFINITION)
+
+
+@timing
+def copy_to_parquet():
+    get_con().execute("COPY vw_data TO 'data/data.parquet' (FORMAT parquet);")
 
 
 @timing
