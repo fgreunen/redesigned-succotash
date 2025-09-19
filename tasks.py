@@ -9,6 +9,7 @@ from db import (
     copy_to_parquet,
     get_average_duckdb,
     get_average_bare,
+    get_average_duckdb_parquet,
     get_average_pandas,
     get_average_polars,
     init as db_init,
@@ -52,6 +53,7 @@ def generate(_):
 @task
 def analyse(_):
     print(f"Current average (DuckDB) is: {get_average_duckdb()}.")
+    print(f"Current average (DuckDB) is: {get_average_duckdb_parquet()}.")
     print(f"Current average (bare) is: {get_average_bare()}.")
     print(f"Current average (Pandas) is: {get_average_pandas()}.")
     print(f"Current average (Polars) is: {get_average_polars()}.")

@@ -33,6 +33,12 @@ def get_average_duckdb():
 
 
 @timing
+def get_average_duckdb_parquet():
+    sql = "SELECT AVG(k2) FROM read_parquet('data/data.parquet')"
+    return round(get_con().execute(sql).fetchone()[0], 1)
+
+
+@timing
 def get_average_bare():
     with open(PATH_DATA, "r") as f:
         line = f.readline()
